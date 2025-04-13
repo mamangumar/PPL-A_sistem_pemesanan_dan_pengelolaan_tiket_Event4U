@@ -83,14 +83,8 @@
             border-radius: 6px;
             cursor: pointer;
         }
-        .payment-section {
-            padding: 2rem;
-        }
-        .accordion {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            padding: 1rem;
+        .payment-detail {
+            display: none;
         }
         footer {
             background-color: #880e1f;
@@ -120,7 +114,7 @@
 
 <main class="container">
     <div class="card">
-        <img src="https://via.placeholder.com/250x400?text=Billie+Eilish+Poster" alt="Billie Eilish Poster" class="event-image">
+        <img src="be.png" alt="Billie Eilish Poster" class="event-image">
         <h3>Konser Billie Eilish</h3>
         <p><strong>Tanggal:</strong> 23 Oktober - 27 Oktober 2025</p>
         <p><strong>Waktu:</strong> 19:00 - 22:00</p>
@@ -129,7 +123,8 @@
 
     <div class="form-section">
         <h3>Attendee</h3>
-        <form>
+        <form action="/guest/tickets/{{ \$ticket->id }}/order" method="POST">
+            @csrf
             <div class="form-group">
                 <label>Name*</label>
                 <input type="text" name="name" required>
@@ -156,6 +151,60 @@
                     <label><input type="radio" name="gender" value="male"> Male</label>
                     <label><input type="radio" name="gender" value="female"> Female</label>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Payment Method*</label>
+                <select name="payment_method" id="payment_method" required>
+                    <option value="">-- Select Payment Method --</option>
+                    <option value="credit">Credit Card</option>
+                    <option value="va">Virtual Account</option>
+                    <option value="wallet">Wallet</option>
+                    <option value="paylater">PayLater</option>
+                </select>
+            </div>
+
+            <div class="form-group payment-detail" id="credit-form">
+                <label>Card Number</label>
+                <input type="text" name="card_number" maxlength="16">
+                <label>Name on Card</label>
+                <input type="text" name="card_name">
+                <label>Expiry Date</label>
+                <input type="month" name="card_expiry">
+                <label>CVV</label>
+                <input type="text" name="card_cvv" maxlength="4">
+            </div>
+
+            <div class="form-group payment-detail" id="va-form">
+                <label>Choose Bank</label>
+                <select name="va_bank">
+                    <option value="">-- Select Bank --</option>
+                    <option value="BCA">BCA</option>
+                    <option value="BNI">BNI</option>
+                    <option value="Mandiri">Mandiri</option>
+                    <option value="BRI">BRI</option>
+                </select>
+            </div>
+
+            <div class="form-group payment-detail" id="wallet-form">
+                <label>Choose Wallet</label>
+                <select name="wallet_option">
+                    <option value="">-- Select Wallet --</option>
+                    <option value="Gopay">GoPay</option>
+                    <option value="OVO">OVO</option>
+                    <option value="DANA">DANA</option>
+                    <option value="ShopeePay">ShopeePay</option>
+                </select>
+            </div>
+
+            <div class="form-group payment-detail" id="paylater-form">
+                <label>Choose PayLater Provider</label>
+                <select name="paylater_option">
+                    <option value="">-- Select Provider --</option>
+                    <option value="spaylater">Shopee PayLater</option>
+                    <option value="gopaylater">GoPayLater</option>
+                    <option value="akulaku">Akulaku</option>
+                </select>
             </div>
 
             <div class="order-summary">
@@ -190,32 +239,31 @@
     </div>
 </main>
 
-<section class="payment-section">
-    <h3>Payment Method</h3>
-    <div class="accordion">
-        <strong>Credit Card</strong>
-    </div>
-    <div class="accordion">
-        <strong>Virtual Account</strong>
-    </div>
-    <div class="accordion">
-        <strong>Wallet</strong>
-    </div>
-    <div class="accordion">
-        <strong>PayLater</strong>
-    </div>
-</section>
-
 <footer>
     <div>
         <h4>OUR ADDRESS</h4>
-        <p>57125 Surakarta<br>PT Tiket Indonesia<br>Cedung Selatan Lantai 8</p>
+        <p>57125 Surakarta<br>PT Tiket Indonesia<br>Gedung Selatan Lantai 8</p>
     </div>
     <div>
         <h4>OUR CONTACT</h4>
-        <p>pntontngkt@tik.in<br>+62 123456789</p>
+        <p>pnonton@tiket.in<br>+62 123456789</p>
     </div>
 </footer>
 
+<script>
+    const paymentSelect = document.getElementById('payment_method');
+    const allForms = document.querySelectorAll('.payment-detail');
+
+    paymentSelect.addEventListener('change', function () {
+        allForms.forEach(form => form.style.display = 'none');
+        const selected = paymentSelect.value;
+        if (selected) {
+            const formToShow = document.getElementById(`${selected}-form`);
+            if (formToShow) formToShow.style.display = 'block';
+        }
+    });
+</script>
+
 </body>
 </html>
+`
